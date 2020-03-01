@@ -1,8 +1,11 @@
+import Mesh from '../mesh/index.js';
+import {getBlock} from '../block/index.js';
+
 function ChunkMeshBuilder()
 {
 };
 
-ChunkMeshBuilder.prototype.buildChunkMeshes = function()
+function buildBlockMeshes(blockID, submeshes)
 {
   const positions = [
     // Front face
@@ -84,12 +87,16 @@ ChunkMeshBuilder.prototype.buildChunkMeshes = function()
     0.0, 1.0,
   ];
 
-  return [{
-    verts: positions,
-    tris: indices,
-    uvs: textureCoordinates,
-    texture: 'assets/textures/block/oak_log_top.png',
-  }];
+  submeshes['assets/textures/block/oak_log_top.png'] = new Mesh(positions, indices, textureCoordinates);
+}
+
+ChunkMeshBuilder.prototype.buildChunkMeshes = function()
+{
+  const submeshes = {};
+
+  buildBlockMeshes('oak_log', submeshes);
+
+  return Object.values(submeshes);
 };
 
 export {ChunkMeshBuilder as default};
