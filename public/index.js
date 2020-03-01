@@ -7,6 +7,8 @@ let time;
 //
 function main() {
     const canvas = document.querySelector("#glCanvas");
+    const fpsCounter = document.querySelector("#fpsCounter");
+
     // Initialize the GL context
     const gl = canvas.getContext("webgl");
     const renderer = new RenderEngine(gl);
@@ -43,7 +45,7 @@ function main() {
         const frameTime = (now - last).toFixed(2);
         const fps = (1000 / (now - last)).toFixed(0);
         time += (now - last) / 1000;
-        // console.log("FPS " + fps + " ( " + frameTime + "ms )");
+        fpsCounter.textContent = fps + " FPS ( " + frameTime + "ms )";
 
         last = now;
         requestAnimationFrame(render);
@@ -203,7 +205,9 @@ function initShaderProgram(gl, vsSource, fsSource) {
         new Uint16Array(indices), gl.STATIC_DRAW);
   
     return {
-      position: positionBuffer,
-      indices: indexBuffer,
+      verts: positionBuffer,
+      numVerts: positions.length,
+      tris: indexBuffer,
+      numTris: indices.length,
     };
   }

@@ -12,7 +12,7 @@ function initGL(gl)
 {
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearColor(0.0, 0.0, 0.2, 1.0);
     gl.clearDepth(1.0);
 }
 
@@ -70,7 +70,7 @@ RenderEngine.prototype.draw = function(renderable, time)
         const stride = 0;         // how many bytes to get from one set of values to the next
                                 // 0 = use type and numComponents above
         const offset = 0;         // how many bytes inside the buffer to start from
-        gl.bindBuffer(gl.ARRAY_BUFFER, renderable.mesh.position);
+        gl.bindBuffer(gl.ARRAY_BUFFER, renderable.mesh.verts);
         gl.vertexAttribPointer(
             renderable.shader.attribLocations.vertexPosition,
             numComponents,
@@ -84,7 +84,7 @@ RenderEngine.prototype.draw = function(renderable, time)
 
     {
       // Tell WebGL which indices to use to index the vertices
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, renderable.mesh.indices);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, renderable.mesh.tris);
     }
 
     // Tell WebGL to use our program when drawing
@@ -101,7 +101,7 @@ RenderEngine.prototype.draw = function(renderable, time)
         modelViewMatrix);
 
     {
-        const vertexCount = 36;
+        const vertexCount = renderable.mesh.numTris;
         const type = gl.UNSIGNED_SHORT;
         const offset = 0;
         gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
