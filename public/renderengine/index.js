@@ -107,7 +107,7 @@ RenderEngine.prototype.draw = function(renderable, time)
   gl.activeTexture(gl.TEXTURE0);
 
   // Bind the texture to texture unit 0
-  gl.bindTexture(gl.TEXTURE_2D, renderable.shader.texture);
+  gl.bindTexture(gl.TEXTURE_2D, renderable.mesh.texture);
 
   // Tell the shader we bound the texture to texture unit 0
   gl.uniform1i(renderable.shader.uniformLocations.uSampler, 0);

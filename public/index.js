@@ -18,7 +18,7 @@ function main()
   const renderer = new RenderEngine(gl);
   const textureLoader = new TextureLoader(gl);
   const meshLoader = new MeshLoader(gl);
-  const meshBuilder = new ChunkMeshBuilder();
+  const meshBuilder = new ChunkMeshBuilder(textureLoader);
 
   // Only continue if WebGL is available and working
   if (gl === null)
@@ -28,7 +28,6 @@ function main()
   }
 
   const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
-  const texture = textureLoader.loadTexture('assets/textures/block/oak_log_top.png');
 
   const shader = {
     program: shaderProgram,
@@ -41,7 +40,6 @@ function main()
       modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
       uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
     },
-    texture: texture,
   };
 
   const meshes = meshBuilder.buildChunkMeshes();

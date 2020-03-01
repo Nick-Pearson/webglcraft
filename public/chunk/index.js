@@ -1,100 +1,159 @@
 import Mesh from '../mesh/index.js';
 import {getBlock} from '../block/index.js';
 
-function ChunkMeshBuilder()
+function ChunkMeshBuilder(textureLoader)
 {
+  this.textureLoader = textureLoader;
 };
 
-function buildBlockMeshes(blockID, submeshes)
+function buildTopMesh(x, y, z)
+{
+  const positions = [
+    -0.5, 0.5, -0.5,
+    -0.5, 0.5, 0.5,
+    0.5, 0.5, 0.5,
+    0.5, 0.5, -0.5,
+  ];
+
+  const indices = [
+    0, 1, 2, 0, 2, 3,
+  ];
+
+  const textureCoordinates = [
+    0.0, 0.0,
+    1.0, 0.0,
+    1.0, 1.0,
+    0.0, 1.0,
+  ];
+  const mesh = new Mesh(positions, indices, textureCoordinates);
+  mesh.translate(x, y, z);
+  return mesh;
+}
+
+function buildBottomMesh(x, y, z)
+{
+  const positions = [
+    -0.5, -0.5, -0.5,
+    0.5, -0.5, -0.5,
+    0.5, -0.5, 0.5,
+    -0.5, -0.5, 0.5,
+  ];
+
+  const indices = [
+    0, 1, 2, 0, 2, 3,
+  ];
+
+  const textureCoordinates = [
+    0.0, 0.0,
+    1.0, 0.0,
+    1.0, 1.0,
+    0.0, 1.0,
+  ];
+  const mesh = new Mesh(positions, indices, textureCoordinates);
+  mesh.translate(x, y, z);
+  return mesh;
+}
+
+function buildSidesMesh(x, y, z)
 {
   const positions = [
     // Front face
-    -1.0, -1.0, 1.0,
-    1.0, -1.0, 1.0,
-    1.0, 1.0, 1.0,
-    -1.0, 1.0, 1.0,
+    -0.5, -0.5, 0.5,
+    0.5, -0.5, 0.5,
+    0.5, 0.5, 0.5,
+    -0.5, 0.5, 0.5,
 
     // Back face
-    -1.0, -1.0, -1.0,
-    -1.0, 1.0, -1.0,
-    1.0, 1.0, -1.0,
-    1.0, -1.0, -1.0,
-
-    // Top face
-    -1.0, 1.0, -1.0,
-    -1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0,
-    1.0, 1.0, -1.0,
-
-    // Bottom face
-    -1.0, -1.0, -1.0,
-    1.0, -1.0, -1.0,
-    1.0, -1.0, 1.0,
-    -1.0, -1.0, 1.0,
+    0.5, 0.5, -0.5,
+    -0.5, 0.5, -0.5,
+    -0.5, -0.5, -0.5,
+    0.5, -0.5, -0.5,
 
     // Right face
-    1.0, -1.0, -1.0,
-    1.0, 1.0, -1.0,
-    1.0, 1.0, 1.0,
-    1.0, -1.0, 1.0,
+    0.5, -0.5, -0.5,
+    0.5, -0.5, 0.5,
+    0.5, 0.5, 0.5,
+    0.5, 0.5, -0.5,
 
     // Left face
-    -1.0, -1.0, -1.0,
-    -1.0, -1.0, 1.0,
-    -1.0, 1.0, 1.0,
-    -1.0, 1.0, -1.0,
+    -0.5, -0.5, -0.5,
+    -0.5, -0.5, 0.5,
+    -0.5, 0.5, 0.5,
+    -0.5, 0.5, -0.5,
   ];
 
   const indices = [
     0, 1, 2, 0, 2, 3, // front
     4, 5, 6, 4, 6, 7, // back
-    8, 9, 10, 8, 10, 11, // top
-    12, 13, 14, 12, 14, 15, // bottom
-    16, 17, 18, 16, 18, 19, // right
-    20, 21, 22, 20, 22, 23, // left
+    8, 9, 10, 8, 10, 11, // right
+    12, 13, 14, 12, 14, 15, // left
   ];
 
   const textureCoordinates = [
     // Front
-    0.0, 0.0,
-    1.0, 0.0,
-    1.0, 1.0,
     0.0, 1.0,
+    1.0, 1.0,
+    1.0, 0.0,
+    0.0, 0.0,
     // Back
     0.0, 0.0,
     1.0, 0.0,
     1.0, 1.0,
     0.0, 1.0,
-    // Top
-    0.0, 0.0,
-    1.0, 0.0,
-    1.0, 1.0,
-    0.0, 1.0,
-    // Bottom
-    0.0, 0.0,
-    1.0, 0.0,
-    1.0, 1.0,
-    0.0, 1.0,
     // Right
-    0.0, 0.0,
-    1.0, 0.0,
-    1.0, 1.0,
     0.0, 1.0,
+    1.0, 1.0,
+    1.0, 0.0,
+    0.0, 0.0,
     // Left
-    0.0, 0.0,
-    1.0, 0.0,
-    1.0, 1.0,
     0.0, 1.0,
+    1.0, 1.0,
+    1.0, 0.0,
+    0.0, 0.0,
   ];
-
-  submeshes['assets/textures/block/oak_log_top.png'] = new Mesh(positions, indices, textureCoordinates);
+  const mesh = new Mesh(positions, indices, textureCoordinates);
+  mesh.translate(x, y, z);
+  return mesh;
 }
+
+ChunkMeshBuilder.prototype.addSubmesh = function(texture, mesh, submeshes)
+{
+  const existingMesh = submeshes[texture];
+
+  if (existingMesh !== undefined)
+  {
+    existingMesh.addMesh(mesh);
+  }
+  else
+  {
+    const glTexture = this.textureLoader.loadTexture(texture);
+    mesh.texture = glTexture;
+    submeshes[texture] = mesh;
+  }
+};
+
+ChunkMeshBuilder.prototype.buildBlockMeshes = function(blockID, x, y, z, submeshes)
+{
+  const block = getBlock(blockID);
+
+  this.addSubmesh(block.topTexture, buildTopMesh(x, y, z), submeshes);
+  this.addSubmesh(block.bottomTexture, buildBottomMesh(x, y, z), submeshes);
+  this.addSubmesh(block.sidesTexture, buildSidesMesh(x, y, z), submeshes);
+};
 
 ChunkMeshBuilder.prototype.buildChunkMeshes = function()
 {
   const submeshes = {};
 
-  buildBlockMeshes('oak_log', submeshes);
+  for (let x = -1; x < 2; ++x)
+  {
+    for (let z = -1; z < 2; ++z)
+    {
+      this.buildBlockMeshes('grass_block', x, 0.0, z, submeshes);
+    }
+  }
+  this.buildBlockMeshes('oak_log', 0.0, 1.0, 0.0, submeshes);
+  this.buildBlockMeshes('oak_log', 0.0, 2.0, 0.0, submeshes);
 
   return Object.values(submeshes);
 };

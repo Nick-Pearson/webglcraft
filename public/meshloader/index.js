@@ -24,6 +24,7 @@ MeshLoader.prototype.loadMesh = function(mesh)
     tris: indexBuffer,
     numTris: mesh.tris.length,
     uvs: textureCoordBuffer,
+    texture: mesh.texture,
   };
 };
 
