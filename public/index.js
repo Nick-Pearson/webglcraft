@@ -1,9 +1,8 @@
+import Camera from './camera/index.js';
 import RenderEngine from './renderengine/index.js';
 import TextureLoader from './textureloader/index.js';
 import MeshLoader from './meshloader/index.js';
 import ChunkMeshBuilder from './chunk/index.js';
-
-let time;
 
 //
 // start here
@@ -15,7 +14,8 @@ function main()
 
   // Initialize the GL context
   const gl = canvas.getContext('webgl');
-  const renderer = new RenderEngine(gl);
+  const camera = new Camera(45.0);
+  const renderer = new RenderEngine(gl, camera);
   const textureLoader = new TextureLoader(gl);
   const meshLoader = new MeshLoader(gl);
   const meshBuilder = new ChunkMeshBuilder(textureLoader);
@@ -50,16 +50,20 @@ function main()
   }
 
   let last = 0;
-  time = 0;
+  let deltaTime = 0.0;
+
+  document.addEventListener('keydown', (event) => keyHandler(event, true), false);
+  document.addEventListener('keyup', (event) => keyHandler(event, false), false);
 
   function render(now)
   {
-    renderer.drawScene(time);
+    updateGameLogic(deltaTime, camera);
+    renderer.drawScene();
 
-    const frameTime = (now - last).toFixed(2);
+    deltaTime = (now - last) / 1000;
+    const framTimeMs = (now - last).toFixed(2);
     const fps = (1000 / (now - last)).toFixed(0);
-    time += (now - last) / 1000;
-    fpsCounter.textContent = fps + ' FPS ( ' + frameTime + 'ms )';
+    fpsCounter.textContent = fps + ' FPS ( ' + framTimeMs + 'ms )';
 
     last = now;
     requestAnimationFrame(render);
@@ -68,6 +72,52 @@ function main()
 }
 
 window.onload = main;
+
+let rightPressed = false;
+let leftPressed = false;
+let upPressed = false;
+let downPressed = false;
+
+function keyHandler(event, value)
+{
+  if (event.keyCode == 68)
+  {
+    rightPressed = value;
+  }
+  else if (event.keyCode == 65)
+  {
+    leftPressed = value;
+  }
+  else if (event.keyCode == 83)
+  {
+    downPressed = value;
+  }
+  else if (event.keyCode == 87)
+  {
+    upPressed = value;
+  }
+}
+
+const cameraMoveSpeed = 2.0;
+function updateGameLogic(deltaTime, camera)
+{
+  if (leftPressed)
+  {
+    camera.translate(cameraMoveSpeed * deltaTime, 0.0, 0.0);
+  }
+  if (rightPressed)
+  {
+    camera.translate(-cameraMoveSpeed * deltaTime, 0.0, 0.0);
+  }
+  if (upPressed)
+  {
+    camera.translate(0.0, 0.0, cameraMoveSpeed * deltaTime);
+  }
+  if (downPressed)
+  {
+    camera.translate(0.0, 0.0, -cameraMoveSpeed * deltaTime);
+  }
+}
 
 // Vertex shader program
 

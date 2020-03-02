@@ -1,9 +1,10 @@
-function RenderEngine(gl)
+function RenderEngine(gl, camera)
 {
   console.log('Initialising RenderEngine');
   this.gl = gl;
   this.renderables = [];
-  this.projectionMatrix = createProjectionMatrix(gl, 45);
+  this.projectionMatrix = createProjectionMatrix(gl, camera.fov);
+  this.camera = camera;
 
   initGL(gl);
 }
@@ -33,18 +34,18 @@ function createProjectionMatrix(gl, fov)
   return projectionMatrix;
 }
 
-RenderEngine.prototype.drawScene = function(time)
+RenderEngine.prototype.drawScene = function()
 {
   const gl = this.gl;
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   this.renderables.forEach((renderable) =>
   {
-    this.draw(renderable, time);
+    this.draw(renderable);
   });
 };
 
-RenderEngine.prototype.draw = function(renderable, time)
+RenderEngine.prototype.draw = function(renderable)
 {
   const gl = this.gl;
 
@@ -54,13 +55,9 @@ RenderEngine.prototype.draw = function(renderable, time)
 
   // Now move the drawing position a bit to where we want to
   // start drawing the square.
-
   mat4.translate(modelViewMatrix, // destination matrix
       modelViewMatrix, // matrix to translate
-      [-0.0, 0.0, -6.0]); // amount to translate
-
-  mat4.rotate(modelViewMatrix, modelViewMatrix, time, [1, 0, 0]);
-  mat4.rotate(modelViewMatrix, modelViewMatrix, time * .7, [0, 1, 0]);
+      this.camera.position); // amount to translate
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.

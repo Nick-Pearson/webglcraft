@@ -9,10 +9,10 @@ function ChunkMeshBuilder(textureLoader)
 function buildTopMesh(x, y, z)
 {
   const positions = [
-    -0.5, 0.5, -0.5,
-    -0.5, 0.5, 0.5,
-    0.5, 0.5, 0.5,
-    0.5, 0.5, -0.5,
+    -0.5, 0.0, -0.5,
+    -0.5, 0.0, 0.5,
+    0.5, 0.0, 0.5,
+    0.5, 0.0, -0.5,
   ];
 
   const indices = [
@@ -33,10 +33,10 @@ function buildTopMesh(x, y, z)
 function buildBottomMesh(x, y, z)
 {
   const positions = [
-    -0.5, -0.5, -0.5,
-    0.5, -0.5, -0.5,
-    0.5, -0.5, 0.5,
-    -0.5, -0.5, 0.5,
+    -0.5, -1.0, -0.5,
+    0.5, -1.0, -0.5,
+    0.5, -1.0, 0.5,
+    -0.5, -1.0, 0.5,
   ];
 
   const indices = [
@@ -58,28 +58,28 @@ function buildSidesMesh(x, y, z)
 {
   const positions = [
     // Front face
-    -0.5, -0.5, 0.5,
-    0.5, -0.5, 0.5,
-    0.5, 0.5, 0.5,
-    -0.5, 0.5, 0.5,
+    -0.5, -1.0, 0.5,
+    0.5, -1.0, 0.5,
+    0.5, 0.0, 0.5,
+    -0.5, 0.0, 0.5,
 
     // Back face
-    0.5, 0.5, -0.5,
-    -0.5, 0.5, -0.5,
-    -0.5, -0.5, -0.5,
-    0.5, -0.5, -0.5,
+    0.5, 0.0, -0.5,
+    -0.5, 0.0, -0.5,
+    -0.5, -1.0, -0.5,
+    0.5, -1.0, -0.5,
 
     // Right face
-    0.5, -0.5, -0.5,
-    0.5, -0.5, 0.5,
-    0.5, 0.5, 0.5,
-    0.5, 0.5, -0.5,
+    0.5, -1.0, -0.5,
+    0.5, -1.0, 0.5,
+    0.5, 0.0, 0.5,
+    0.5, 0.0, -0.5,
 
     // Left face
-    -0.5, -0.5, -0.5,
-    -0.5, -0.5, 0.5,
-    -0.5, 0.5, 0.5,
-    -0.5, 0.5, -0.5,
+    -0.5, -1.0, -0.5,
+    -0.5, -1.0, 0.5,
+    -0.5, 0.0, 0.5,
+    -0.5, 0.0, -0.5,
   ];
 
   const indices = [
@@ -145,9 +145,9 @@ ChunkMeshBuilder.prototype.buildChunkMeshes = function()
 {
   const submeshes = {};
 
-  for (let x = -1; x < 2; ++x)
+  for (let x = 0; x < 16; ++x)
   {
-    for (let z = -1; z < 2; ++z)
+    for (let z = 0; z < 16; ++z)
     {
       this.buildBlockMeshes('grass_block', x, 0.0, z, submeshes);
     }
