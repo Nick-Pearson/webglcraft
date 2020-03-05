@@ -1,7 +1,7 @@
 function Camera(fov)
 {
   this.fov = fov;
-  this.position = [-8.0, -2.0, -32.0];
+  this.position = [-8.0, -11.0, -32.0];
 }
 
 Camera.prototype.translate = function(x, y, z)

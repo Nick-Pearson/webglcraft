@@ -54,28 +54,9 @@ function buildBottomMesh(x, y, z)
   return mesh;
 }
 
-function buildSidesMesh(x, y, z)
+function buildLeftMesh(x, y, z)
 {
   const positions = [
-    // Front face
-    -0.5, -1.0, 0.5,
-    0.5, -1.0, 0.5,
-    0.5, 0.0, 0.5,
-    -0.5, 0.0, 0.5,
-
-    // Back face
-    0.5, 0.0, -0.5,
-    -0.5, 0.0, -0.5,
-    -0.5, -1.0, -0.5,
-    0.5, -1.0, -0.5,
-
-    // Right face
-    0.5, -1.0, -0.5,
-    0.5, -1.0, 0.5,
-    0.5, 0.0, 0.5,
-    0.5, 0.0, -0.5,
-
-    // Left face
     -0.5, -1.0, -0.5,
     -0.5, -1.0, 0.5,
     -0.5, 0.0, 0.5,
@@ -83,29 +64,82 @@ function buildSidesMesh(x, y, z)
   ];
 
   const indices = [
-    0, 1, 2, 0, 2, 3, // front
-    4, 5, 6, 4, 6, 7, // back
-    8, 9, 10, 8, 10, 11, // right
-    12, 13, 14, 12, 14, 15, // left
+    0, 1, 2, 0, 2, 3,
   ];
 
   const textureCoordinates = [
-    // Front
     0.0, 1.0,
     1.0, 1.0,
     1.0, 0.0,
     0.0, 0.0,
-    // Back
-    0.0, 0.0,
-    1.0, 0.0,
-    1.0, 1.0,
+  ];
+  const mesh = new Mesh(positions, indices, textureCoordinates);
+  mesh.translate(x, y, z);
+  return mesh;
+}
+
+function buildRightMesh(x, y, z)
+{
+  const positions = [
+    0.5, -1.0, -0.5,
+    0.5, -1.0, 0.5,
+    0.5, 0.0, 0.5,
+    0.5, 0.0, -0.5,
+  ];
+
+  const indices = [
+    0, 1, 2, 0, 2, 3,
+  ];
+
+  const textureCoordinates = [
     0.0, 1.0,
-    // Right
+    1.0, 1.0,
+    1.0, 0.0,
+    0.0, 0.0,
+  ];
+  const mesh = new Mesh(positions, indices, textureCoordinates);
+  mesh.translate(x, y, z);
+  return mesh;
+}
+
+function buildFrontMesh(x, y, z)
+{
+  const positions = [
+    -0.5, -1.0, 0.5,
+    0.5, -1.0, 0.5,
+    0.5, 0.0, 0.5,
+    -0.5, 0.0, 0.5,
+  ];
+
+  const indices = [
+    0, 1, 2, 0, 2, 3,
+  ];
+
+  const textureCoordinates = [
     0.0, 1.0,
     1.0, 1.0,
     1.0, 0.0,
     0.0, 0.0,
-    // Left
+  ];
+  const mesh = new Mesh(positions, indices, textureCoordinates);
+  mesh.translate(x, y, z);
+  return mesh;
+}
+
+function buildBackMesh(x, y, z)
+{
+  const positions = [
+    0.5, 0.0, -0.5,
+    -0.5, 0.0, -0.5,
+    -0.5, -1.0, -0.5,
+    0.5, -1.0, -0.5,
+  ];
+
+  const indices = [
+    0, 1, 2, 0, 2, 3,
+  ];
+
+  const textureCoordinates = [
     0.0, 1.0,
     1.0, 1.0,
     1.0, 0.0,
@@ -132,16 +166,37 @@ ChunkMeshBuilder.prototype.addSubmesh = function(texture, mesh, submeshes)
   }
 };
 
-ChunkMeshBuilder.prototype.buildBlockMeshes = function(blockID, x, y, z, submeshes)
+ChunkMeshBuilder.prototype.buildBlockMeshes = function(world, blockID, x, y, z, submeshes)
 {
   const block = getBlock(blockID);
 
-  this.addSubmesh(block.topTexture, buildTopMesh(x, y, z), submeshes);
-  this.addSubmesh(block.bottomTexture, buildBottomMesh(x, y, z), submeshes);
-  this.addSubmesh(block.sidesTexture, buildSidesMesh(x, y, z), submeshes);
+  if (!world.isOpaqueBlock(x, y + 1.0, z))
+  {
+    this.addSubmesh(block.topTexture, buildTopMesh(x, y, z), submeshes);
+  }
+  if (!world.isOpaqueBlock(x, y - 1.0, z))
+  {
+    this.addSubmesh(block.bottomTexture, buildBottomMesh(x, y, z), submeshes);
+  }
+  if (!world.isOpaqueBlock(x + 1.0, y, z))
+  {
+    this.addSubmesh(block.sidesTexture, buildRightMesh(x, y, z), submeshes);
+  }
+  if (!world.isOpaqueBlock(x - 1.0, y, z))
+  {
+    this.addSubmesh(block.sidesTexture, buildLeftMesh(x, y, z), submeshes);
+  }
+  if (!world.isOpaqueBlock(x, y, z + 1.0))
+  {
+    this.addSubmesh(block.sidesTexture, buildFrontMesh(x, y, z), submeshes);
+  }
+  if (!world.isOpaqueBlock(x, y, z - 1.0))
+  {
+    this.addSubmesh(block.sidesTexture, buildBackMesh(x, y, z), submeshes);
+  }
 };
 
-ChunkMeshBuilder.prototype.buildChunkMeshes = function()
+ChunkMeshBuilder.prototype.buildChunkMeshes = function(world)
 {
   const submeshes = {};
 
@@ -149,11 +204,16 @@ ChunkMeshBuilder.prototype.buildChunkMeshes = function()
   {
     for (let z = 0; z < 16; ++z)
     {
-      this.buildBlockMeshes('grass_block', x, 0.0, z, submeshes);
+      for (let y = 0; y < 16; ++y)
+      {
+        const blockId = world.getBlockAt(x, y, z);
+        if (blockId != null)
+        {
+          this.buildBlockMeshes(world, blockId, x, y, z, submeshes);
+        }
+      }
     }
   }
-  this.buildBlockMeshes('oak_log', 0.0, 1.0, 0.0, submeshes);
-  this.buildBlockMeshes('oak_log', 0.0, 2.0, 0.0, submeshes);
 
   return Object.values(submeshes);
 };

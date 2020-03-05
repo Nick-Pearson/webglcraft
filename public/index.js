@@ -3,6 +3,7 @@ import RenderEngine from './renderengine/index.js';
 import TextureLoader from './textureloader/index.js';
 import MeshLoader from './meshloader/index.js';
 import ChunkMeshBuilder from './chunk/index.js';
+import World from './world/index.js';
 
 //
 // start here
@@ -42,7 +43,8 @@ function main()
     },
   };
 
-  const meshes = meshBuilder.buildChunkMeshes();
+  const world = new World();
+  const meshes = meshBuilder.buildChunkMeshes(world);
   for (const mesh of meshes)
   {
     const glMesh = meshLoader.loadMesh(mesh);
