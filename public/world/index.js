@@ -5,7 +5,7 @@ function World()
   {
     for (let z = 0; z < 16; z++)
     {
-      this.heights[x + (z*16)] = 10.0 + Math.floor(x / 3.0);
+      this.heights[x + (z*16)] = 10.0 - Math.floor(x+z / 2.0);
     }
   }
 }

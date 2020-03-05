@@ -129,10 +129,10 @@ function buildFrontMesh(x, y, z)
 function buildBackMesh(x, y, z)
 {
   const positions = [
-    0.5, 0.0, -0.5,
-    -0.5, 0.0, -0.5,
     -0.5, -1.0, -0.5,
     0.5, -1.0, -0.5,
+    0.5, 0.0, -0.5,
+    -0.5, 0.0, -0.5,
   ];
 
   const indices = [
