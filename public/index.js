@@ -1,4 +1,4 @@
-import Camera from './camera/index.js';
+import Player from './player/index.js';
 import RenderEngine from './renderengine/index.js';
 import TextureLoader from './textureloader/index.js';
 import MeshLoader from './meshloader/index.js';
@@ -15,8 +15,8 @@ function main()
 
   // Initialize the GL context
   const gl = canvas.getContext('webgl');
-  const camera = new Camera(45.0);
-  const renderer = new RenderEngine(gl, camera);
+  const player = new Player();
+  const renderer = new RenderEngine(gl, player.camera);
   const textureLoader = new TextureLoader(gl);
   const meshLoader = new MeshLoader(gl);
   const meshBuilder = new ChunkMeshBuilder(textureLoader);
@@ -51,18 +51,21 @@ function main()
     renderer.addObject(glMesh, shader);
   }
 
-  let last = 0;
+  let last = performance.now();
   let deltaTime = 0.0;
+  let time = 0.0;
 
   document.addEventListener('keydown', (event) => keyHandler(event, true), false);
   document.addEventListener('keyup', (event) => keyHandler(event, false), false);
 
   function render(now)
   {
-    updateGameLogic(deltaTime, camera);
+    console.log('Update ' + time + ' ' + player.velocity);
+    updateGameLogic(deltaTime, [player]);
     renderer.drawScene();
 
     deltaTime = (now - last) / 1000;
+    time += deltaTime;
     const framTimeMs = (now - last).toFixed(2);
     const fps = (1000 / (now - last)).toFixed(0);
     fpsCounter.textContent = fps + ' FPS ( ' + framTimeMs + 'ms )';
@@ -100,24 +103,11 @@ function keyHandler(event, value)
   }
 }
 
-const cameraMoveSpeed = 2.0;
-function updateGameLogic(deltaTime, camera)
+function updateGameLogic(deltaTime, objects)
 {
-  if (leftPressed)
+  for (let i = 0; i < objects.length; ++i)
   {
-    camera.translate(cameraMoveSpeed * deltaTime, 0.0, 0.0);
-  }
-  if (rightPressed)
-  {
-    camera.translate(-cameraMoveSpeed * deltaTime, 0.0, 0.0);
-  }
-  if (upPressed)
-  {
-    camera.translate(0.0, 0.0, cameraMoveSpeed * deltaTime);
-  }
-  if (downPressed)
-  {
-    camera.translate(0.0, 0.0, -cameraMoveSpeed * deltaTime);
+    objects[i].update(deltaTime);
   }
 }
 
