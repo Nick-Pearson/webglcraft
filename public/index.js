@@ -4,6 +4,7 @@ import TextureLoader from './textureloader/index.js';
 import MeshLoader from './meshloader/index.js';
 import ChunkMeshBuilder from './chunk/index.js';
 import World from './world/index.js';
+import {getPhysicsEngine} from './physics/index.js';
 
 //
 // start here
@@ -20,6 +21,7 @@ function main()
   const textureLoader = new TextureLoader(gl);
   const meshLoader = new MeshLoader(gl);
   const meshBuilder = new ChunkMeshBuilder(textureLoader);
+  const physicsEngine = getPhysicsEngine();
 
   // Only continue if WebGL is available and working
   if (gl === null)
@@ -53,19 +55,17 @@ function main()
 
   let last = performance.now();
   let deltaTime = 0.0;
-  let time = 0.0;
 
   document.addEventListener('keydown', (event) => keyHandler(event, true), false);
   document.addEventListener('keyup', (event) => keyHandler(event, false), false);
 
   function render(now)
   {
-    console.log('Update ' + time + ' ' + player.velocity);
     updateGameLogic(deltaTime, [player]);
+    physicsEngine.update(deltaTime);
     renderer.drawScene();
 
     deltaTime = (now - last) / 1000;
-    time += deltaTime;
     const framTimeMs = (now - last).toFixed(2);
     const fps = (1000 / (now - last)).toFixed(0);
     fpsCounter.textContent = fps + ' FPS ( ' + framTimeMs + 'ms )';
