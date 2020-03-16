@@ -56,9 +56,6 @@ function main()
   let last = performance.now();
   let deltaTime = 0.0;
 
-  document.addEventListener('keydown', (event) => keyHandler(event, true), false);
-  document.addEventListener('keyup', (event) => keyHandler(event, false), false);
-
   function render(now)
   {
     updateGameLogic(deltaTime, [player]);
@@ -77,31 +74,6 @@ function main()
 }
 
 window.onload = main;
-
-let rightPressed = false;
-let leftPressed = false;
-let upPressed = false;
-let downPressed = false;
-
-function keyHandler(event, value)
-{
-  if (event.keyCode == 68)
-  {
-    rightPressed = value;
-  }
-  else if (event.keyCode == 65)
-  {
-    leftPressed = value;
-  }
-  else if (event.keyCode == 83)
-  {
-    downPressed = value;
-  }
-  else if (event.keyCode == 87)
-  {
-    upPressed = value;
-  }
-}
 
 function updateGameLogic(deltaTime, objects)
 {
