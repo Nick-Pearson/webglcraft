@@ -14,6 +14,10 @@ function main()
   const canvas = document.querySelector('#glCanvas');
   const fpsCounter = document.querySelector('#fpsCounter');
 
+  canvas.requestPointerLock();
+  canvas.width = document.body.clientWidth;
+  canvas.height = document.body.clientHeight;
+
   // Initialize the GL context
   const gl = canvas.getContext('webgl');
   const player = new Player();

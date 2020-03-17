@@ -3,7 +3,7 @@ import RigidBody from '../physics/rigidbody.js';
 
 function Player()
 {
-  this.camera = new Camera(this, 45.0);
+  this.camera = new Camera(this, 70.0);
   this.rigidbody = new RigidBody(this);
   this.position = [-6.0, -13.0, -10.0];
 

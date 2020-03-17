@@ -21,8 +21,8 @@ function createProjectionMatrix(gl, fov)
 {
   const fieldOfView = fov * Math.PI / 180;
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-  const zNear = 0.1;
-  const zFar = 100.0;
+  const zNear = 0.001;
+  const zFar = 8000.0;
   const projectionMatrix = mat4.create();
 
   mat4.perspective(projectionMatrix,
