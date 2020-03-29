@@ -15,6 +15,10 @@ function main()
   const fpsCounter = document.querySelector('#fpsCounter');
 
   canvas.requestPointerLock();
+  canvas.onclick = function()
+  {
+    canvas.requestPointerLock();
+  };
   canvas.width = document.body.clientWidth;
   canvas.height = document.body.clientHeight;
 

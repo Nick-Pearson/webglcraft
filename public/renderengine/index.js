@@ -49,15 +49,22 @@ RenderEngine.prototype.draw = function(renderable)
 {
   const gl = this.gl;
 
-  // Set the drawing position to the "identity" point, which is
-  // the center of the scene.
   const modelViewMatrix = mat4.create();
 
-  // Now move the drawing position a bit to where we want to
-  // start drawing the square.
-  mat4.translate(modelViewMatrix, // destination matrix
-      modelViewMatrix, // matrix to translate
-      this.camera.getPosition()); // amount to translate
+  const b = quat.create();
+  quat.normalize(b, this.camera.getRotation());
+
+  const a = mat4.create();
+  mat4.fromQuat(a, b);
+  mat4.multiply(modelViewMatrix,
+      modelViewMatrix,
+      a);
+
+  mat4.invert(modelViewMatrix, modelViewMatrix);
+
+  mat4.translate(modelViewMatrix,
+      modelViewMatrix,
+      this.camera.getPosition());
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
