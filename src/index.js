@@ -6,6 +6,8 @@ import ChunkMeshBuilder from './chunk/index.js';
 import World from './world/index.js';
 import {getPhysicsEngine} from './physics/index.js';
 
+import './style.css';
+
 //
 // start here
 //
